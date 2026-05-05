@@ -112,7 +112,6 @@ export default function App() {
             <p className="eyebrow">Blockchain-Anchored QML Framework</p>
             <h2>SME Financing Readiness & Investor Trust Dashboard</h2>
           </div>
-          <div className="presentationBadge">Class Demo Prototype</div>
         </header>
 
         {view === "sme" && selectedSme && <SmeDashboard sme={selectedSme} />}
