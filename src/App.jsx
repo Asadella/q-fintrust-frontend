@@ -1,14 +1,44 @@
-import { useState } from "react";
-import { Building2, Landmark, ShieldCheck } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Building2, Landmark, ShieldCheck, PlusCircle } from "lucide-react";
 import SmeDashboard from "./components/SmeDashboard.jsx";
 import InvestorDashboard from "./components/InvestorDashboard.jsx";
+import AddSmeForm from "./components/AddSmeForm.jsx";
 import { smeProfiles } from "./data/mockData.js";
 
 export default function App() {
   const [view, setView] = useState("sme");
-  const [selectedSmeId, setSelectedSmeId] = useState(smeProfiles[0].smeId);
+  const [profiles, setProfiles] = useState(() => {
+    const savedProfiles = localStorage.getItem("qfintrust_sme_profiles");
+    return savedProfiles ? JSON.parse(savedProfiles) : smeProfiles;
+  });
 
-  const selectedSme = smeProfiles.find((sme) => sme.smeId === selectedSmeId);
+  const [selectedSmeId, setSelectedSmeId] = useState(profiles[0]?.smeId || "");
+
+  useEffect(() => {
+    localStorage.setItem("qfintrust_sme_profiles", JSON.stringify(profiles));
+  }, [profiles]);
+
+  const selectedSme =
+    profiles.find((sme) => sme.smeId === selectedSmeId) || profiles[0];
+
+  function handleAddSme(newSme) {
+    const smeExists = profiles.some((sme) => sme.smeId === newSme.smeId);
+
+    if (smeExists) {
+      alert("This SME ID already exists. Please use a different SME ID.");
+      return;
+    }
+
+    setProfiles((currentProfiles) => [...currentProfiles, newSme]);
+    setSelectedSmeId(newSme.smeId);
+    setView("sme");
+  }
+
+  function resetDemoData() {
+    localStorage.removeItem("qfintrust_sme_profiles");
+    setProfiles(smeProfiles);
+    setSelectedSmeId(smeProfiles[0].smeId);
+  }
 
   return (
     <div className="app">
@@ -19,6 +49,7 @@ export default function App() {
           </div>
           <div>
             <h1>Q-FinTrust</h1>
+            <p>Module R Frontend</p>
           </div>
         </div>
 
@@ -38,16 +69,24 @@ export default function App() {
             <Landmark size={18} />
             Investor Dashboard
           </button>
+
+          <button
+            className={view === "add" ? "navButton active" : "navButton"}
+            onClick={() => setView("add")}
+          >
+            <PlusCircle size={18} />
+            Add SME Data
+          </button>
         </nav>
 
         <div className="sidebarCard">
           <label htmlFor="sme-select">Selected SME</label>
           <select
             id="sme-select"
-            value={selectedSmeId}
+            value={selectedSme?.smeId || ""}
             onChange={(event) => setSelectedSmeId(event.target.value)}
           >
-            {smeProfiles.map((sme) => (
+            {profiles.map((sme) => (
               <option key={sme.smeId} value={sme.smeId}>
                 {sme.businessName}
               </option>
@@ -55,11 +94,14 @@ export default function App() {
           </select>
         </div>
 
+        <button className="resetButton" onClick={resetDemoData}>
+          Reset Demo Data
+        </button>
+
         <div className="note">
           <strong>Prototype status:</strong>
           <span>
-            This frontend uses placeholder integrated data. Replace mock data
-            with real module outputs later.
+            This frontend uses placeholder integrated data. Added SME data is saved locally in the browser.
           </span>
         </div>
       </aside>
@@ -73,11 +115,11 @@ export default function App() {
           <div className="presentationBadge">Class Demo Prototype</div>
         </header>
 
-        {view === "sme" ? (
-          <SmeDashboard sme={selectedSme} />
-        ) : (
-          <InvestorDashboard profiles={smeProfiles} />
-        )}
+        {view === "sme" && selectedSme && <SmeDashboard sme={selectedSme} />}
+
+        {view === "investor" && <InvestorDashboard profiles={profiles} />}
+
+        {view === "add" && <AddSmeForm onAddSme={handleAddSme} />}
       </main>
     </div>
   );
