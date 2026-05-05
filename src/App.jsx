@@ -29,7 +29,7 @@ export default function App() {
             onClick={() => setView("sme")}
           >
             <Building2 size={18} />
-            SMA Dashboard
+            SME Dashboard
           </button>
 
           <button
