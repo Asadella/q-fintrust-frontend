@@ -67,5 +67,3 @@ with real outputs from:
 - Module L: ESG score
 - Module P: RBAC/privacy status
 - Module BC: blockchain verification status
-
-For next Friday, this can be presented as the frontend prototype using placeholder integrated data.
