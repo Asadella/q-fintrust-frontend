@@ -48,7 +48,7 @@ export default function App() {
             <ShieldCheck size={28} />
           </div>
           <div>
-            <h1>Q-FinTrust test</h1>
+            <h1>Q-FinTrust</h1>
           </div>
         </div>
 
