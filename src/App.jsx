@@ -49,7 +49,6 @@ export default function App() {
           </div>
           <div>
             <h1>Q-FinTrust</h1>
-            <p>Module R Frontend</p>
           </div>
         </div>
 
